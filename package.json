@@ -3,6 +3,7 @@
   "version": "2.1.0",
   "description": "",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/NST069/EZWEBMER-2/issues"
   },
-  "homepage": "https://github.com/NST069/EZWEBMER-2#readme"
+  "homepage": "https://github.com/NST069/EZWEBMER-2#readme",
+  "dependencies": {
+    "common.js": "^1.1.1",
+    "fs": "0.0.1-security",
+    "node": "^13.9.0"
+  }
 }
