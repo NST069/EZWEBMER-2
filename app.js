@@ -1,14 +1,29 @@
-const http = require('http');
+const {app, BrowserWindow} = require('electron');
+const path = require('path');
+const url = require('url');
 
-const hostname = '127.0.0.1';
-const port = 3000;
+let win;
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello World');
-});
+function createWindow(){
+  win=new BrowserWindow({width:800, height:600, icon:__dirname+'/img/tmpicon.png'});
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+  win.loadURL(url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
+
+  //devtools
+  win.webContents.openDevTools();
+
+  win.on('closed', ()=>{win=null;});
+}
+
+app.on('ready', createWindow);
+
+//for mac
+app.on('window-all-closed', ()=>{
+  if(process.platform!=='darwin'){
+    app.quit();
+  }
 });
