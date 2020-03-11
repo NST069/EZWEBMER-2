@@ -1,16 +1,6 @@
-//import { app } from 'electron';
-
-//const path = require('path');
-/*
-let saveDir = ()=>{
-    let dir = `${app.getPath('documents')} \\EZWEBMER\\`;
-
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
-    }    
-    return dir;
-};*/
-const saveDirectory = 'test';//`${app.getPath('documents')} \\EZWEBMER\\`;
+const remote = require('electron').remote;
+const app = remote.app;
+const saveDirectory = `${app.getPath('documents')}\\EZWEBMER\\`;
 
 let formats = [
     {name: `Image`, fmts: [`jpg`, `png`, `gif`]},
@@ -33,7 +23,7 @@ let FFMpegProcess_Commands = [
                 `"${outpath}" `;
 
             return cmd;
-        }, formats: [...formats.filter(fmts=>fmts.name===`Image`)] },
+        }, formats: formats.filter(fmts=>fmts.name===`Image`).map(fs=>fs.fmts)[0] },            //TODO: Fix
     { name: `V->M`, caption: `Get Audio From Video`, command: 
         (vidpath, format="mp3")=>{
             let outpath = `${saveDirectory}${vidpath.substr(0, vidpath.lastIndexOf('.'))}.${format}`;
@@ -44,7 +34,7 @@ let FFMpegProcess_Commands = [
             `-f ${format} "${outpath}"`;
 
             return cmd;
-        }, formats: [...formats.filter(fmts=>fmts.name===`Video`)] },
+        }, formats: formats.filter(fmts=>fmts.name===`Video`).map(fs=>fs.fmts)[0] },            //TODO: Fix
     { name: `V->GIF`, caption: `Video To GIF`, command: 
         (vidpath)=>{
             let outpath = `${saveDirectory}${vidpath.substr(0, vidpath.lastIndexOf('.'))}.gif`;
@@ -60,7 +50,7 @@ let FFMpegProcess_Commands = [
             `"${outpath}"`;
 
             return cmd;
-        }, formats: [...formats.filter(fmts=>fmts.name===`Video`)] },
+        }, formats: formats.filter(fmts=>fmts.name===`Video`).map(fs=>fs.fmts)[0] },            //TODO: Fix
     /*
     { name: `GIF->V`, caption: `GIF To Video`, command: 
         (imgpath, audpath, output, format=".mp4")=>{
@@ -91,15 +81,21 @@ module.exports = {
     },
     test: ()=>{
         let cmdtest1 = FFMpegProcess_Commands.find(cmd=>cmd.name===`IM->V`);
-        console.log(cmdtest1.command(`t1.png`,`t2.mp3`,`t3`));
-
         let cmdtest2 = FFMpegProcess_Commands.find(cmd=>cmd.name===`V->M`);
-        console.log(cmdtest2.command(`t1.mp4`));
-
         let cmdtest3 = FFMpegProcess_Commands.find(cmd=>cmd.name===`V->GIF`);
-        console.log(cmdtest3.command(`t1.gif`));
-
         let cmdtest4 = FFMpegProcess_Commands.find(cmd=>cmd.name===`GIF->V`);
-        console.log(cmdtest4.command(`t1.mp4`));
+
+        return `<h2>${cmdtest1.caption}</h2>
+                <h3>${cmdtest1.formats.map(fmt=>`.${fmt}`).join(' ')}</h3>
+                <p>${cmdtest1.command(`t1.png`,`t2.mp3`,`t3`)}</p>`+
+            `<h2>${cmdtest2.caption}</h2>
+                <h3>${cmdtest2.formats.map(fmt=>`.${fmt}`).join(' ')}</h3>
+                <p>${cmdtest2.command(`t1.mp4`)}</p>`+
+            `<h2>${cmdtest3.caption}</h2>
+                <h3>${cmdtest3.formats.map(fmt=>`.${fmt}`).join(' ')}</h3>
+                <p>${cmdtest3.command(`t1.gif`)}</p>`+
+            `<h2>${cmdtest4.caption}</h2>
+                <h3>${cmdtest4.formats.map(fmt=>`.${fmt}`).join(' ')}</h3>
+                <p>${cmdtest4.command(`t1.mp4`)}</p>`;
     }
 }
