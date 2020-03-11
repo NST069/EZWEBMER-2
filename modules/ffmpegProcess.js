@@ -1,23 +1,25 @@
+//import { app } from 'electron';
+
 //const path = require('path');
+/*
 let saveDir = ()=>{
-    let fs = require('fs');
-    let shell = new ActiveXObject("WScript.Shell");
-    let dir = `${shell.SpecialFolders('MyDocuments')} \\EZWEBMER\\`;
+    let dir = `${app.getPath('documents')} \\EZWEBMER\\`;
 
     if (!fs.existsSync(dir)){
         fs.mkdirSync(dir);
     }    
     return dir;
-};
-const saveDirectory = 'C:/dl/'//saveDir.call();
+};*/
+const saveDirectory = 'test';//`${app.getPath('documents')} \\EZWEBMER\\`;
 
-const formats = [
+let formats = [
     {name: `Image`, fmts: [`jpg`, `png`, `gif`]},
     {name: `Audio`, fmts: [`wav`, `mp3`, `flac`]},
     {name: `Video`, fmts: [`webm`, `mp4`]},
-]
+];
+//export {formats};
 
-const FFMpegProcess_Commands = [
+let FFMpegProcess_Commands = [
     { name: `IM->V`, caption: `Image and Audio to Video`, command: 
         (imgpath, audpath, output, format="mp4")=>{
             let outpath = `${saveDirectory}${output}.${format}`;
@@ -77,14 +79,27 @@ function ExecuteProcess(cmd){
     Console.log(cmdText);
 }
 
-let cmdtest1 = FFMpegProcess_Commands.find(cmd=>cmd.name===`IM->V`);
-console.log(cmdtest1.command(`t1.png`,`t2.mp3`,`t3`));
 
-let cmdtest2 = FFMpegProcess_Commands.find(cmd=>cmd.name===`V->M`);
-console.log(cmdtest2.command(`t1.mp4`));
+module.exports = {
+    exec: ExecuteProcess,
+    cmdList: ()=>{
+        return FFMpegProcess_Commands;
+    }, 
+    formats: formats,
+    formatsOf: (type)=>{
+        return formats.filter(fmts=>fmts.name==type); 
+    },
+    test: ()=>{
+        let cmdtest1 = FFMpegProcess_Commands.find(cmd=>cmd.name===`IM->V`);
+        console.log(cmdtest1.command(`t1.png`,`t2.mp3`,`t3`));
 
-let cmdtest3 = FFMpegProcess_Commands.find(cmd=>cmd.name===`V->GIF`);
-console.log(cmdtest3.command(`t1.gif`));
+        let cmdtest2 = FFMpegProcess_Commands.find(cmd=>cmd.name===`V->M`);
+        console.log(cmdtest2.command(`t1.mp4`));
 
-let cmdtest4 = FFMpegProcess_Commands.find(cmd=>cmd.name===`GIF->V`);
-console.log(cmdtest4.command(`t1.mp4`));
+        let cmdtest3 = FFMpegProcess_Commands.find(cmd=>cmd.name===`V->GIF`);
+        console.log(cmdtest3.command(`t1.gif`));
+
+        let cmdtest4 = FFMpegProcess_Commands.find(cmd=>cmd.name===`GIF->V`);
+        console.log(cmdtest4.command(`t1.mp4`));
+    }
+}

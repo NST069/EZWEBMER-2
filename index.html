@@ -13,12 +13,12 @@
     </div>
 
     <script src = './renderer.js'></script>
+    <script type='module'>
+        const FFMpegProc = require('./modules/ffmpegProcess.js');
+
+        FFMpegProc.test();
+    </script>
 </body>
 <script>
-    //console.log(process);
-    let output = `
-        <h2>test</h2>
-    `;
-    document.getElementById('output').innerHTML = output;
 </script>
 </html>
