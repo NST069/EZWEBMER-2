@@ -66,7 +66,7 @@ function ExecuteProcess(cmd){
     let cmdText = `/c cd \"${ffmpegFolder}\" & ffmpeg ${cmd}`;
 
     //start process here
-    Console.log(cmdText);
+    console.log(cmdText);
 }
 
 
@@ -77,7 +77,7 @@ module.exports = {
     }, 
     formats: formats,
     formatsOf: (type)=>{
-        return formats.filter(fmts=>fmts.name==type); 
+        return formats.filter(fmts=>fmts.name==type).map(fs=>fs.fmts)[0].map(fmt=>`.${fmt}`).join(', '); 
     },
     test: ()=>{
         let cmdtest1 = FFMpegProcess_Commands.find(cmd=>cmd.name===`IM->V`);
