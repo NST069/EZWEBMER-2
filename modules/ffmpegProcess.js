@@ -62,11 +62,46 @@ let FFMpegProcess_Commands = [
 ];
 
 function ExecuteProcess(cmd){
-    let ffmpegFolder = `/ffmpeg`;
-    let cmdText = `/c cd \"${ffmpegFolder}\" & ffmpeg ${cmd}`;
+    let ffmpegFolder = `${require('path').resolve(__dirname, '..')}/ffmpeg`;
+    let cmdText = `cd /D \"${ffmpegFolder}\" & ffmpeg ${cmd}`;
 
     //start process here
     console.log(cmdText);
+    
+    let spawn = require("child_process").spawn;
+
+    let bat = spawn("ffmpeg", [cmd], {
+        cwd: ffmpegFolder,
+        shell: true,
+        stdio: 'inherit'
+    });
+    /*
+    bat.stdout.on("data", (data) => {
+        // Handle data...
+        console.log(`Data: ${data}`);
+    });
+
+    bat.stderr.on("data", (err) => {
+        // Handle error...
+        console.log(`Err: ${err}`);
+    });
+    */
+    bat.on("exit", (code) => {
+        // Handle exit
+        console.log("DONE");
+    });
+   /*
+   let exec = require("child_process").exec;
+
+    exec(cmdText, (error, stdout, stderr)=>{
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        if (error !== null) {
+        console.log('exec error: ' + error.message);
+        }
+
+    });
+    */
 }
 
 
