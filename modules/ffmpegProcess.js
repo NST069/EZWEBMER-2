@@ -4,57 +4,19 @@ const saveDirectory = `${app.getPath('documents')}\\EZWEBMER\\`;
 
 let formats = require(`${require('path').resolve(__dirname, '..')}/res/AvailableFormats.json`);
 
-let FFMpegProcess_Commands = [
-    { name: `IM->V`, caption: `Image and Audio to Video`, command: 
-        (imgpath, audpath, output, format="mp4")=>{
-            let outpath = `${saveDirectory}${output}.${format}`;
-            let duration = 60;//
-            let cmd = `${(imgpath.split('.').pop() === "gif") ? ("-ignore_loop 0 ") : ("-loop 1 -r 1 ")} `+ 
-                `-i "${imgpath}" ` + 
-                `-i "${audpath}" ` + 
-                `-t ${duration} ` +
-                `-b:v 0 -crf 2 -b:a 160K -shortest -g 9999 ` +
-                `-pix_fmt yuv420p -speed 0 -deadline 0 -threads 4 `+
-                `"${outpath}" `;
+let ParseCmdsJSON = ()=>{
+    let list = require(`${require('path').resolve(__dirname, '..')}/res/cmds.json`);
+    let cmds = [];
+    list.forEach(element => {
+        element.command = eval(element.command);
+        element.formats=(typeof(element.formats)==='string')?formats.filter(fmts=>fmts.name===element.formats).map(fs=>fs.fmts)[0]:element.formats;
+        cmds.push(element);
+    });
+    //console.log(cmds);
+    return cmds;
+};
 
-            return cmd;
-        }, formats: formats.filter(fmts=>fmts.name===`Image`).map(fs=>fs.fmts)[0] },            //TODO: Fix
-    { name: `V->M`, caption: `Get Audio From Video`, command: 
-        (vidpath, format="mp3")=>{
-            let outpath = `${saveDirectory}${vidpath.substr(0, vidpath.lastIndexOf('.'))}.${format}`;
-            let cmd = `-i "${vidpath}" -ar 44100 -ac 2 `+
-            `${format==="mp3" ? `-vn -acodec mp3 -ab 320 `: ``}`+
-            `${format==="wav" ? `-vn -acodec pcm_s16le `: ``}`+
-            `${format==="flac" ? `-acodec flac -bits_per_raw_sample 16 `: ``}`+
-            `-f ${format} "${outpath}"`;
-
-            return cmd;
-        }, formats: formats.filter(fmts=>fmts.name===`Video`).map(fs=>fs.fmts)[0] },            //TODO: Fix
-    { name: `V->GIF`, caption: `Video To GIF`, command: 
-        (vidpath)=>{
-            let outpath = `${saveDirectory}${vidpath.substr(0, vidpath.lastIndexOf('.'))}.gif`;
-            let cmd = `-i "${vidpath}" "${outpath}"`;
-
-            return cmd;
-        }, formats: [`gif`] },
-    { name: `GIF->V`, caption: `GIF To Video`, command: 
-        (imgpath, format="mp4")=>{
-            let outpath = `${saveDirectory}${imgpath.substr(0, imgpath.lastIndexOf('.'))}.${format}`;
-            let cmd = `-i "${imgpath}"` +
-            `-movflags faststart -pix_fmt yuv420p -vf "scale = trunc(iw / 2) * 2:trunc(ih / 2) * 2" ` +
-            `"${outpath}"`;
-
-            return cmd;
-        }, formats: formats.filter(fmts=>fmts.name===`Video`).map(fs=>fs.fmts)[0] },            //TODO: Fix
-    /*
-    { name: `GIF->V`, caption: `GIF To Video`, command: 
-        (imgpath, audpath, output, format=".mp4")=>{
-            let cmd = ``;
-
-            return cmd;
-        }, formats: `` },
-    */
-];
+let FFMpegProcess_Commands = ParseCmdsJSON();
 
 function ExecuteProcess(cmd){
     let ffmpegFolder = `/ffmpeg`;

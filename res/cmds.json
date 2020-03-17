@@ -1,0 +1,26 @@
+[
+    { 
+        "name": "IM->V", 
+        "caption": "Image and Audio to Video",
+        "command": "(imgpath, audpath, output, format=\"mp4\")=>{\nlet outpath = `${saveDirectory}${output}.${format}`;\nlet duration = 60;\nlet cmd = `${(imgpath.split('.').pop() === \"gif\") ? (\"-ignore_loop 0 \") : (\"-loop 1 -r 1 \")} -i \"${imgpath}\" -i \"${audpath}\" -t ${duration} -b:v 0 -crf 2 -b:a 160K -shortest -g 9999 -pix_fmt yuv420p -speed 0 -deadline 0 -threads 4 \"${outpath}\" `;\nreturn cmd;}",
+        "formats": "Image"
+    },
+    { 
+        "name": "V->M", 
+        "caption": "Get Audio From Video", 
+        "command": "(vidpath, format=\"mp3\")=>{\nlet outpath = `${saveDirectory}${vidpath.substr(0, vidpath.lastIndexOf('.'))}.${format}`;\nlet cmd = `-i \"${vidpath}\" -ar 44100 -ac 2 ${format===\"mp3\" ? `-vn -acodec mp3 -ab 320 `: ``}${format===\"wav\" ? `-vn -acodec pcm_s16le `: ``}${format===\"flac\" ? `-acodec flac -bits_per_raw_sample 16 `: ``}-f ${format} \"${outpath}\"`;\nreturn cmd;}",
+        "formats": "Video"
+    },
+    { 
+        "name": "V->GIF", 
+        "caption": "Video To GIF", 
+        "command": "(vidpath)=>{\nlet outpath = `${saveDirectory}${vidpath.substr(0, vidpath.lastIndexOf('.'))}.gif`;\nlet cmd = `-i \"${vidpath}\" \"${outpath}\"`;\nreturn cmd;}",
+        "formats": ["gif"] 
+    },
+    { 
+        "name": "GIF->V", 
+        "caption": "GIF To Video", 
+        "command": "(imgpath, format=\"mp4\")=>{\nlet outpath = `${saveDirectory}${imgpath.substr(0, imgpath.lastIndexOf('.'))}.${format}`;\nlet cmd = `-i \"${imgpath}\" -movflags faststart -pix_fmt yuv420p -vf \"scale = trunc(iw / 2) * 2:trunc(ih / 2) * 2\" \"${outpath}\"`;\nreturn cmd;}",
+        "formats": "Video"
+        }
+]
