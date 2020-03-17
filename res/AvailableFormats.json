@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Image", 
+        "fmts": ["jpg", "png", "gif"]
+    },
+    {
+        "name": "Audio", 
+        "fmts": ["wav", "mp3", "flac"]
+    },
+    {
+        "name": "Video", 
+        "fmts": ["webm", "mp4"]
+    }
+]
