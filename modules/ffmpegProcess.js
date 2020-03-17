@@ -2,12 +2,7 @@ const remote = require('electron').remote;
 const app = remote.app;
 const saveDirectory = `${app.getPath('documents')}\\EZWEBMER\\`;
 
-let formats = [
-    {name: `Image`, fmts: [`jpg`, `png`, `gif`]},
-    {name: `Audio`, fmts: [`wav`, `mp3`, `flac`]},
-    {name: `Video`, fmts: [`webm`, `mp4`]},
-];
-//export {formats};
+let formats = require(`${require('path').resolve(__dirname, '..')}/res/AvailableFormats.json`);
 
 let FFMpegProcess_Commands = [
     { name: `IM->V`, caption: `Image and Audio to Video`, command: 
