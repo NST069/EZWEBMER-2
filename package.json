@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/NST069/EZWEBMER-2#readme",
   "dependencies": {
-    "electron": "^8.2.4"
+    "electron": "^8.5.1"
   }
 }
